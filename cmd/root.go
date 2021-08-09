@@ -1,9 +1,9 @@
-
 package cmd
 
 import (
 	"fmt"
 	"os"
+
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )
@@ -13,8 +13,8 @@ var cfgFile string
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
 	Use:   "pay-later",
-	Short: "A brief description of your application",
-	Long: `Pay-Later is a CLI app`,
+	Short: "Pay-later CLI",
+	Long:  `Pay-Later CLI app`,
 	// Run: func(cmd *cobra.Command, args []string) { },
 }
 

@@ -1,0 +1,48 @@
+
+
+To Run this on local
+1. Git clone
+2. To install dependencies - go install
+3. To build your application - go build
+4. To run the application - ./pay-later
+
+
+Supported commands
+
+1. Onboard User :
+    ./pay-later new user <username> <email> <credit-limit> 
+    example ./pay-later new user ashok ashok@gmail.com 1800
+
+2. Onboard Merchant
+    ./pay-later new merchant <username> <discount>
+    example ./pay-later new merchant paypal 90%
+
+3. Update merchant Discount
+    ./pay-later update merchant <mercahnt-name> <discount_per>%
+    example ./pay-later update merchant americanexpress 90%
+
+4. Create new Transaction
+    ./pay-later new transaction <username> <merchant> <amount>
+   example ./pay-later new transaction Piyush rupay 800
+
+5. Create Payback to user //Note that user can't do payback greater than his/her credit limit
+    ./pay-later payback <user> amount  // amount should not reached the credit limit 
+   example ./pay-later payback Ram 1800
+
+6. Report of User 
+    ./pay-later report dues <username>
+   example ./pay-later report dues Ram
+
+7. Report of All user's due
+    ./pay-later report total-dues  // get dues of all users
+    example ./pay-later report total-dues
+
+8. Report of discount provided by Merchant
+    ./pay-later report discount <merchant_name>
+    example ./pay-later report discount <merchant_name>
+
+Scope of improvement : 
+
+// User's Account Statements (with both credit and debit)
+// Merchants Account Statement 
+// Get Total amount that is payable to merchant(Company will pay) 

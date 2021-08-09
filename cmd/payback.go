@@ -16,7 +16,6 @@ limitations under the License.
 package cmd
 
 import (
-	"fmt"
 	"log"
 	"pay-later/components"
 	"strconv"
@@ -30,8 +29,6 @@ var paybackCmd = &cobra.Command{
 	Short: "PayBack and restore Credit Limit",
 	Long: `PayBack and restore Credit Limit`,
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("payback called")
-		fmt.Println("user called")
 		userName := args[0]
 		credit, error := strconv.ParseFloat(args[1], 32)
 		if error != nil {

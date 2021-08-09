@@ -16,7 +16,6 @@ limitations under the License.
 package cmd
 
 import (
-	"fmt"
 	"log"
 	"pay-later/components"
 	"strconv"
@@ -39,10 +38,8 @@ var userCmd = &cobra.Command{
 		emailId := args[1]
 		credit, error := strconv.ParseFloat(args[2], 32)
 		if error != nil {
-			log.Fatal("Error While Connection", error)
+			log.Fatal("Error", error)
 		}
-		fmt.Println("UserName : " + userName)
-		fmt.Println("emailId : " + emailId)
 		components.CreateUser(userName, emailId, float32(credit), float32(credit))
 	},
 }

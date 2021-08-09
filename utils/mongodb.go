@@ -23,7 +23,6 @@ var client *mongo.Client
 func ConnectAndGetMongoDbCollection(documentName string, tableName string) *mongo.Collection {
 	// get a MongoDBClient
 	client := getClient()
-	log.Println("Connected to MongoDB!")
 	// Check the connection
 	collection := client.Database(documentName).Collection(tableName)
 	return collection
@@ -37,7 +36,6 @@ func ConnectAndGetMongoDbCollection(documentName string, tableName string) *mong
 func CloseMongoDbClient() {
 	client := getClient()
 	client.Disconnect(context.TODO())
-	log.Println("Connection to MongoDB closed.")
 }
 
 

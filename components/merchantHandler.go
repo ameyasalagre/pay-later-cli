@@ -5,7 +5,6 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 
 	"context"
-	"fmt"
 	"log"
 	"pay-later/modules"
 	"pay-later/utils"
@@ -19,6 +18,7 @@ func CreateMerchant(merchantName string, discount float32) {
 		log.Fatal(err)
 	}
 	go utils.CloseMongoDbClient()
+	log.Print("Merchant Created Successfully")
 }
 
 func UpDateMerchantDiscountByName(merchantName string, updatedDiscount float32) {
@@ -34,9 +34,9 @@ func UpDateMerchantDiscountByName(merchantName string, updatedDiscount float32) 
 	_, err := collection.UpdateOne(context.TODO(), filter, update)
 	if err != nil {
 		if err == mongo.ErrNoDocuments {
-			fmt.Println("rejected! (reason: user not found)")
+			log.Println("rejected! (reason: user not found)")
 		}
 	}
 	go utils.CloseMongoDbClient()
-	fmt.Println("Merchant Discount updated Successfully")
+	log.Println("Merchant Discount updated Successfully")
 }

@@ -3,7 +3,6 @@ package components
 import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 
-	"context"
 	"fmt"
 	"log"
 	"strconv"
@@ -20,7 +19,7 @@ func InitiatePayout(userName, merchant string, amount float32) string {
 		return error
 	}
 	if client.Credit < amount {
-		fmt.Println("Can't do transaction ,outof credit limit")
+		log.Print("Can't do transaction ,out of credit limit rejected! (reason: credit limit)")
 		return "rejected! (reason: credit limit)"
 	}
 	// Merchant
@@ -29,6 +28,7 @@ func InitiatePayout(userName, merchant string, amount float32) string {
 	_merchant,merchantErr := getMerchantByName(merchant)
 	if(merchantErr!=""){
 		return error
+
 	}
 
 	discount := _merchant.Discount
@@ -39,17 +39,9 @@ func InitiatePayout(userName, merchant string, amount float32) string {
 
 
 	timeStamp := primitive.Timestamp{T:uint32(time.Now().Unix())}
-	var ledger modules.Ledger
-	ledger.Amount = amount
-	ledger.DiscountOffered = _merchant.Discount
-	ledger.LedgerType = "DEBIT"
-	ledger.Merchant = _merchant.Id
-	ledger.TransactionId = "PL" + strconv.Itoa(int(transactionId))
-	ledger.User = client.Id
-	ledger.RunningBalance = runningBalance
-	ledger.CreatedAt = timeStamp
+	
 	processDebitCreditFromClient(client.Id,runningBalance)
-
+	//map merchant ledger
 	var mLedger modules.MLedger
 	mLedger.Amount = payableForMerchant
 	mLedger.CreatedAt = timeStamp
@@ -61,26 +53,23 @@ func InitiatePayout(userName, merchant string, amount float32) string {
 	mLedger.User = client.Id
 	processCreditToMerchant(mLedger)
 
-	
+	//map ledger struct
+	var ledger modules.Ledger
+	ledger.Amount = amount
+	ledger.DiscountOffered = _merchant.Discount
+	ledger.LedgerType = "DEBIT"
+	ledger.Merchant = _merchant.Id
+	ledger.TransactionId = "PL" + strconv.Itoa(int(transactionId))
+	ledger.User = client.Id
+	ledger.RunningBalance = runningBalance
+	ledger.CreatedAt = timeStamp
 	generateLedger(ledger)
-	fmt.Println(transactionId)
-
+	log.Print("Transaction Success Transaction-ID PL", strconv.Itoa(int(transactionId)))
 	defer utils.CloseMongoDbClient()
-	return "trassssss"
+	return "Transaction Success!"
 
 }
 
-func createPayout(amount, discountOffered, runningBalance float32, merchant, user primitive.ObjectID, transactionId, ledgerType string) {
-	ledgerEntry := modules.CreatePayout(amount, discountOffered, runningBalance, merchant, user, transactionId, ledgerType)
-	fmt.Println("Reach ", ledgerEntry)
-	collection := utils.ConnectAndGetMongoDbCollection("pay-later", "ledgers")
-	data, err := collection.InsertOne(context.TODO(), user)
-	if err != nil {
-		log.Fatal(err)
-	}
-	fmt.Println("DB", data)
-	go utils.CloseMongoDbClient()
-}
 
 func CreatePayBack(userName string, amount float32) string {
 	var client modules.User
@@ -97,7 +86,7 @@ func CreatePayBack(userName string, amount float32) string {
 	restoredCredit := client.Credit + amount
 
 	if(restoredCredit  > client.Limit){
-		fmt.Println("Cannot pay beyond limit,maximum payable amount is", float64(due))
+		log.Println("Cannot pay beyond limit,maximum payable amount is", float64(due))
 		return fmt.Sprint("Cannot pay beyond limit,maximum payable amount is", float64(due))
 	}
 	
@@ -111,6 +100,8 @@ func CreatePayBack(userName string, amount float32) string {
 	ledger.CreatedAt = timeStamp
 	ledger.Description = "Payback by user"
 	generateLedger(ledger)
-	
+	log.Print("Payback Successfull TransactionId: ", "PB" + strconv.Itoa(int(transactionId)))
+	log.Println("(Dues)",client.Limit-restoredCredit)
+
 	return fmt.Sprint("Payback Successfull for amount", float64(due))
 }

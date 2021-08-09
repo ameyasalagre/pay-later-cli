@@ -2,6 +2,7 @@ package components
 
 import (
 	"fmt"
+	"log"
 )
 
 func GetDiscountOfferedByMerchant(merchantName string) string{
@@ -9,8 +10,8 @@ func GetDiscountOfferedByMerchant(merchantName string) string{
 	if(error!=""){
 		return error
 	}
-	fmt.Println("Merchant : "+ result.MerchantName) 
-	fmt.Println("Discount : " , float64(result.Discount))
+	log.Println("Merchant : "+ result.MerchantName) 
+	log.Println("Discount : " , float64(result.Discount))
 	return fmt.Sprintln("Merchant :"+ result.MerchantName +  "is providing ") +
 	fmt.Sprintln(float64(result.Discount))
 }
@@ -21,8 +22,8 @@ func GetDueOfUser(userName string) string{
 		return error
 	}
 	due := result.Limit - result.Credit
-	fmt.Println("User : "+ result.UserName) 
-	fmt.Println("Due : " , float64(due))
+	log.Println("User : "+ result.UserName) 
+	log.Println("Due : " , float64(due))
 	return fmt.Sprintln("User :"+ result.UserName ) +
 	fmt.Sprintln("Due Amount is",float64(due))
 }

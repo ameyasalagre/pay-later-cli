@@ -16,7 +16,6 @@ limitations under the License.
 package cmd
 
 import (
-	"fmt"
 	"log"
 	"pay-later/components"
 	"strconv"
@@ -34,15 +33,9 @@ and usage of using your command. For example:
 
 Pay-Later is a CLI app`,
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("merchant called")
-		fmt.Println("user called")
 		merchantName := args[0]
-		discountPercentage := args[1]
-		res1 := strings.Split(args[1], "%")
-		fmt.Println("res1", res1[0])
-		fmt.Println("UserName : " + merchantName)
-		fmt.Println("discount : " + discountPercentage)
-		discount, error := strconv.ParseFloat(res1[0], 32)
+		discountPercentage := strings.Split(args[1], "%")
+		discount, error := strconv.ParseFloat(discountPercentage[0], 32)
 		if error != nil {
 			log.Fatal("Error While Connection", error)
 		}
@@ -55,8 +48,6 @@ var updateMerchantDiscountCmd = &cobra.Command{
 	Short: "Change Discount",
 	Long:  `Change Discount provided by merchant`,
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("merchant called")
-		fmt.Println("user called")
 		merchantName := args[0]
 		discountPercentage := strings.Split(args[1], "%")
 		discount, error := strconv.ParseFloat(discountPercentage[0], 32)
@@ -68,12 +59,11 @@ var updateMerchantDiscountCmd = &cobra.Command{
 }
 
 var merchantReport = &cobra.Command{
-	Use:   "merchant",
+	Use:   "discount",
 	Short: "Discount provided by Merchant",
 	Long:  `Discount provided by Merchant`,
 	Run: func(cmd *cobra.Command, args []string) {
 		merchantName := args[0]
-		fmt.Print("Report for merchant is generated.")
 		components.GetDiscountOfferedByMerchant(merchantName)
 	},
 }

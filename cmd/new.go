@@ -16,9 +16,6 @@ limitations under the License.
 package cmd
 
 import (
-	"fmt"
-	"strings"
-
 	"github.com/spf13/cobra"
 )
 
@@ -28,7 +25,6 @@ var newCmd = &cobra.Command{
 	Short: "Create New user or Merchant",
 	Long: `Create New User or Merchant if already exist try with different email address`,
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("Here are the arguments of card command : " + strings.Join(args, ","))
 	},
 }
 

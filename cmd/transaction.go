@@ -16,7 +16,6 @@ limitations under the License.
 package cmd
 
 import (
-	"fmt"
 	"log"
 	"pay-later/components"
 	"strconv"
@@ -33,8 +32,6 @@ and usage of using your command. For example:
 
 Pay-Later is a CLI app`,
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("merchant called")
-		fmt.Println("user called")
 		userName := args[0]
 		merchant := args[1]
 		transactionAmt,error :=  strconv.ParseFloat(args[2], 32)

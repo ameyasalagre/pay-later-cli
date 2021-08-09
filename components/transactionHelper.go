@@ -6,7 +6,6 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 
 	"context"
-	"fmt"
 	"log"
 	"pay-later/modules"
 	"pay-later/utils"
@@ -14,11 +13,11 @@ import (
 
 func generateLedger(ledger modules.Ledger) {
 	collection := utils.ConnectAndGetMongoDbCollection("pay-later", "ledgers")
-	data, err := collection.InsertOne(context.TODO(), ledger)
+	
+	_, err := collection.InsertOne(context.TODO(), ledger)
 	if err != nil {
 		log.Fatal(err)
 	}
-	fmt.Println("DB", data)
 	go utils.CloseMongoDbClient()
 }
 
@@ -35,7 +34,7 @@ func processDebitCreditFromClient(user primitive.ObjectID, runningBalance float3
 	_, err := collection.UpdateOne(context.TODO(), filter, update)
 	if err != nil {
 			if err == mongo.ErrNoDocuments {
-			fmt.Println("rejected! (reason: user not found)")
+			log.Println("rejected! (reason: user not found)")
 			return "rejected! (reason: user not found)"
 		}
 	}
@@ -90,7 +89,7 @@ func getUserByUserName(userName string) (modules.User, string)  {
 	err := collection.FindOne(context.TODO(), bson.M{"username": userName}).Decode(&client)
 	if err != nil {
 		if err == mongo.ErrNoDocuments {
-			fmt.Println("rejected! (reason: user not found)")
+			log.Println("rejected! (reason: user not found)")
 			return client,"rejected! (reason: user not found)"
 		}
 		log.Fatal(err)
@@ -104,7 +103,7 @@ func getMerchantByName(merchantName string) (modules.Merchant, string) {
 	err := merchantcollection.FindOne(context.TODO(), bson.M{"merchant_name": merchantName}).Decode(&merchant)
 	if err != nil {
 		if err == mongo.ErrNoDocuments {
-			fmt.Println("Merchant not found")
+			log.Println("Merchant not found")
 			return merchant,"rejected! (reason: Merchant not found)"
 		}
 		log.Fatal(err)
@@ -134,8 +133,8 @@ func getAllUsers() ([]*modules.User, string)  {
 		defer cur.Close(context.TODO())
 		for _, element := range client {
 			clients := *element
-			fmt.Print("\n User " ,clients.UserName)
-			fmt.Print(" Dues", float32(clients.Limit - clients.Credit) )
+			log.Print(" User: " ,clients.UserName)
+			log.Print(" Dues: ", float32(clients.Limit - clients.Credit) )
 			}
 		return client,""
 }
